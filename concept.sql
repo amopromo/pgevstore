@@ -3,7 +3,6 @@ BEGIN;
 CREATE TABLE events (
     key             UUID,  -- event key
     parent_key      UUID,  -- parent key
-    topic           TEXT,  -- event's topic
     source          TEXT,  -- identification of external source of the event
     description     TEXT,  -- event's description
     data            JSONB,  -- related data in json format
@@ -14,7 +13,7 @@ CREATE TABLE events (
 -- hourly partition
 CREATE TABLE events_20190201_23
     (LIKE events INCLUDING DEFAULTS INCLUDING CONSTRAINTS)
-    PARTITION BY HASH (topic, source);
+    PARTITION BY HASH (source);
 
 -- hash partitions
 CREATE TABLE events_20190201_23_0
