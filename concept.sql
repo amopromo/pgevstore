@@ -2,7 +2,6 @@ BEGIN;
 
 CREATE TABLE events (
     key             UUID,  -- event key
-    parent_key      UUID,  -- parent key
     source          TEXT,  -- identification of external source of the event
     description     TEXT,  -- event's description
     data            JSONB,  -- related data in json format
