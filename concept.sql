@@ -3,6 +3,7 @@ BEGIN;
 CREATE TABLE events (
     key             UUID,  -- event key
     source          TEXT,  -- identification of external source of the event
+    ev_type         TEXT,  -- event type
     description     TEXT,  -- event's description
     data            JSONB,  -- related data in json format
     ev_time         timestamp,  -- event's generation time
