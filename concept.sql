@@ -6,8 +6,7 @@ CREATE TABLE events (
     description     TEXT,  -- event's description
     data            JSONB,  -- related data in json format
     ev_time         timestamp,  -- event's generation time
-    created_at      timestamp  --  timestamp in which the event was recorded to the database
-) PARTITION BY RANGE (created_at);
+) PARTITION BY RANGE (ev_time);
 
 -- 6 hours partition
 CREATE TABLE events_20190201_0
