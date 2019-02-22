@@ -20,18 +20,32 @@ SELECT_LATEST_PARTITION = """
 SELECT_ALL_PARTITION = """
     SELECT tablename
     FROM pg_catalog.pg_tables
-    WHERE tablename ~ 'events_\d+_\d+'
+    WHERE tablename ~ '^events_\d+_\d+$'
     ORDER BY tablename
 """
 
-CREATE_PARTITION = """
-    CREATE TABLE IF NOT EXISTS {table_name} PARTITION OF events FOR VALUES FROM ('{dt}') TO ('{dt_p_one}');
+CREATE_RANGE_PARTITION = """
+    CREATE TABLE IF NOT EXISTS {range_partition_name}
+        (LIKE events INCLUDING DEFAULTS INCLUDING CONSTRAINTS)
+        PARTITION BY HASH (source);
 """
 
-DROP_TABLE = """
-    DROP TABLE {table_name}
+CREATE_HASH_PARTITION = """
+    CREATE TABLE IF NOT EXISTS {range_partition_name}_{hash_mod_remainder}
+        (LIKE {range_partition_name} INCLUDING DEFAULTS INCLUDING CONSTRAINTS);
+    ALTER TABLE {range_partition_name} ATTACH PARTITION {range_partition_name}_{hash_mod_remainder}
+        FOR VALUES WITH (MODULUS {hash_mod}, REMAINDER {hash_mod_remainder});
+"""
+
+ATTACH_RANGE_TABLE = """
+    ALTER TABLE events ATTACH PARTITION {range_partition_name}
+    FOR VALUES FROM ('{dt}') TO ('{dt_p_one}');
 """
 
 DETACH_TABLE = """
     ALTER TABLE IF EXISTS events DETACH PARTITION {table_name}
+"""
+
+DROP_TABLE = """
+    DROP TABLE {table_name}
 """

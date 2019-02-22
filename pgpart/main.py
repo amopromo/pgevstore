@@ -19,6 +19,9 @@ TABLES_BEHIND = int(os.getenv('PGEVSTORE_TABLES_BEHIND') or 4*60)
 # How long is the range of each table partition in hours
 TABLES_INTERVAL = int(os.getenv('PGEVSTORE_TABLES_INTERVAL') or 6)
 
+# How long is the range of each table partition in hours
+HASH_MODULUS = int(os.getenv('PGEVSTORE_HASH_MODULUS') or 4)
+
 # Where to put dump files when they get cold
 DUMP_PATH = os.getenv('PGEVSTORE_DUMP_PATH') or './bkp'
 
@@ -119,8 +122,21 @@ def create_partitions(cur):
     while dt <= end_dt:
         print('{}: creating partition for {}'.format(datetime.now(), dt))
 
-        sqlCommand = sql.CREATE_PARTITION.format(
-            table_name='events_' + dt.strftime("%Y%m%d_%H"),
+        range_partition_name = 'events_' + dt.strftime("%Y%m%d_%H")
+
+        sqlCommand = sql.CREATE_RANGE_PARTITION.format(range_partition_name=range_partition_name)
+        cur.execute(sqlCommand)
+
+        for i in range(HASH_MODULUS):
+            sqlCommand = sql.CREATE_HASH_PARTITION.format(
+                range_partition_name=range_partition_name,
+                hash_mod_remainder=i,
+                hash_mod=HASH_MODULUS,
+            )
+            cur.execute(sqlCommand)
+
+        sqlCommand = sql.ATTACH_RANGE_TABLE.format(
+            range_partition_name=range_partition_name,
             dt=dt.isoformat(),
             dt_p_one=(dt + table_interval).isoformat(),
         )
