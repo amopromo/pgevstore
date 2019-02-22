@@ -7,7 +7,7 @@ CREATE TABLE events (
     description     TEXT,  -- event's description
     data            JSONB,  -- related data in json format
     ev_time         timestamp,  -- event's generation time
-    tags            integer[],  -- tags defined by the client
+    tags            integer[]  -- tags defined by the client
 ) PARTITION BY RANGE (ev_time);
 
 -- 6 hours partition
