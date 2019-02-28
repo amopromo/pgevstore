@@ -5,8 +5,8 @@ CREATE_TABLE = """
         ev_type         TEXT,
         description     TEXT,
         data            JSONB,
-        ev_time         timestamp,
-        tags            integer[]
+        tags            integer[],
+        ev_time         timestamp
     ) PARTITION BY RANGE (ev_time);
 """
 
