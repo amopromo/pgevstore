@@ -36,3 +36,37 @@ class Client:
             })
 
         self.conn.commit()
+
+    def add_batch(self, batch):
+        batch_size = len(batch)
+
+        if batch_size == 0:
+            return
+
+        args = []
+
+        for row in batch:
+            (source, description, data, tags, ev_time, ) = row
+
+            if not source:
+                raise Exception('The "source" value should not be empty')
+
+            key = uuid.uuid4()
+
+            args += [key, source, description, json.dumps(data), tags, ev_time]
+
+        args_sql = ','.join(['({})'.format(','.join(['%s'] * 6))] * batch_size)
+        sql = """
+            INSERT INTO events(key, source, description, data, tags, ev_time)
+            VALUES {}
+        """.format(args_sql)
+
+        rowcount = 0
+        with self.conn.cursor() as cur:
+            cur.execute(sql, tuple(args))
+
+            rowcount = cur.rowcount
+
+        self.conn.commit()
+
+        return rowcount
