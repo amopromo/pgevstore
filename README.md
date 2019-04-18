@@ -19,9 +19,9 @@ Creates a dump for and delete range partitions keeping only the amount of range 
 - PGEVSTORE_TABLES_BEHIND
     - How many tables the script with leaf behind before triming
 - PGEVSTORE_TABLES_INTERVAL
-    - How long is the range of each table partition in hours
+    - How long is the range of each primary partition in days
 - PGEVSTORE_HASH_MODULUS
-    - How long is the range of each table partition in hours
+    - How many secondary partitions for each primary partition
 - PGEVSTORE_DUMP_PATH
     - Where to put dump files when they get cold
 - PGEVSTORE_DNS
