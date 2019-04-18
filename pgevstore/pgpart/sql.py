@@ -2,7 +2,6 @@ CREATE_TABLE = """
     CREATE TABLE IF NOT EXISTS events (
         key             UUID,
         source          TEXT,
-        ev_type         TEXT,
         description     TEXT,
         data            JSONB,
         tags            integer[],
