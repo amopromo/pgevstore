@@ -3,11 +3,11 @@ import sys
 import os
 import subprocess
 from os.path import join
-from datetime import datetime, timedelta, time
+from datetime import date, datetime, timedelta
 
 import psycopg2
 
-import sql
+from pgevstore.pgpart import sql
 
 
 # How many tables the script with generate ahead
@@ -72,9 +72,9 @@ def pgpart_trim():
 
     for i, (partition, ) in enumerate(rows):
         print("{}/{}: {}".format(i+1, len(rows), partition))
-        dt = datetime.strptime(partition, "events_%Y%m%d_%H")
+        dt = datetime.strptime(partition, "events_%Y%m%d")
 
-        if dt + timedelta(hours=TABLES_INTERVAL) * TABLES_BEHIND > datetime.now():
+        if dt + timedelta(days=TABLES_INTERVAL) * TABLES_BEHIND > date.today():
             print('skip')
             continue
 
@@ -101,28 +101,26 @@ def create_partitions(cur):
     row = cur.fetchone()
 
     try:
-        dt = datetime.strptime(row[0], "events_%Y%m%d_%H")
+        dt = datetime.strptime(row[0], "events_%Y%m%d")
     except (ValueError, TypeError):
         dt = None
 
-    now = datetime.now()
-    now_hour = int(now.hour / TABLES_INTERVAL) * TABLES_INTERVAL
-    now_dt = datetime.combine(now.date(), time.min).replace(hour=now_hour)
+    today = date.today()
 
     if not dt:
         if DEFAULT_BEGIN:
-            dt = datetime.strptime(DEFAULT_BEGIN, "%Y-%m-%d %H")
+            dt = datetime.strptime(DEFAULT_BEGIN, "%Y-%m-%d").date()
         else:
-            dt = now_dt
+            dt = today
 
-    table_interval = timedelta(hours=TABLES_INTERVAL)
+    table_interval = timedelta(days=TABLES_INTERVAL)
 
-    end_dt = now_dt + table_interval * TABLES_AHEAD
+    end_dt = today + table_interval * TABLES_AHEAD
 
     while dt <= end_dt:
         print('{}: creating partition for {}'.format(datetime.now(), dt))
 
-        range_partition_name = 'events_' + dt.strftime("%Y%m%d_%H")
+        range_partition_name = 'events_' + dt.strftime("%Y%m%d")
 
         sqlCommand = sql.CREATE_RANGE_PARTITION.format(range_partition_name=range_partition_name)
         cur.execute(sqlCommand)
