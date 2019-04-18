@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/amopromo/pgevstore",
-    packages=['pgpart'],
+    packages=['pgevstore', 'pgevstore.client', 'pgevstore.pgpart'],
     classifiers=[],
     entry_points={
         'console_scripts': ['pgpart=pgevstore.pgpart:main'],
