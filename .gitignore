@@ -1,3 +1,4 @@
 *.pyc
 pgpart.egg-info
 *.sql.gz
+venv
