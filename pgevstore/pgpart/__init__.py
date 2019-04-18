@@ -11,16 +11,16 @@ from pgevstore.pgpart import sql
 
 
 # How many tables the script with generate ahead
-TABLES_AHEAD = int(os.getenv('PGEVSTORE_TABLES_AHEAD') or 8)
+TABLES_AHEAD = int(os.getenv('PGEVSTORE_TABLES_AHEAD') or 5)
 
 # How many tables the script with leaf behind before triming
-TABLES_BEHIND = int(os.getenv('PGEVSTORE_TABLES_BEHIND') or 4*60)
+TABLES_BEHIND = int(os.getenv('PGEVSTORE_TABLES_BEHIND') or 500)
 
 # How long is the range of each table partition in hours
-TABLES_INTERVAL = int(os.getenv('PGEVSTORE_TABLES_INTERVAL') or 6)
+TABLES_INTERVAL = int(os.getenv('PGEVSTORE_TABLES_INTERVAL') or 7)
 
 # How long is the range of each table partition in hours
-HASH_MODULUS = int(os.getenv('PGEVSTORE_HASH_MODULUS') or 4)
+HASH_MODULUS = int(os.getenv('PGEVSTORE_HASH_MODULUS') or 12)
 
 # Where to put dump files when they get cold
 DUMP_PATH = os.getenv('PGEVSTORE_DUMP_PATH') or './bkp'
