@@ -5,8 +5,8 @@ import psycopg2
 
 
 class Client:
-    def __init__(self, dns):
-        self.conn = psycopg2.connect(dns)
+    def __init__(self, dsn):
+        self.conn = psycopg2.connect(dsn)
 
     def __del__(self):
         self.conn.close()

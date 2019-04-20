@@ -24,7 +24,7 @@ Creates a dump for and delete range partitions keeping only the amount of range 
     - How many secondary partitions for each primary partition
 - PGEVSTORE_DUMP_PATH
     - Where to put dump files when they get cold
-- PGEVSTORE_DNS
-    - Postgres string connection
+- PGEVSTORE_DSN
+    - Postgres data source name
 - PGEVSTORE_DEFAULT_BEGIN
     - Date and time for the first partition when first setting up the system

@@ -26,7 +26,7 @@ HASH_MODULUS = int(os.getenv('PGEVSTORE_HASH_MODULUS') or 12)
 DUMP_PATH = os.getenv('PGEVSTORE_DUMP_PATH') or './bkp'
 
 # Postgres string connection
-DNS = os.getenv('PGEVSTORE_DNS')
+DSN = os.getenv('PGEVSTORE_DSN')
 
 # Date and time for the first partition when first setting up the system
 DEFAULT_BEGIN = os.getenv('PGEVSTORE_DEFAULT_BEGIN')
@@ -37,17 +37,12 @@ def main():
         print("command is missing")
         return
 
-    if not DNS:
-        print("the string connection is missing, please set the enviroment variable 'PGEVSTORE_DNS'")
+    if not DSN:
+        print("the string connection is missing, please set the enviroment variable 'PGEVSTORE_DSN'")
         return
 
     command = sys.argv[1]
     if command == "up":
-
-        if TABLES_INTERVAL not in [1, 2, 3, 4, 6, 8, 12, 24]:
-            print("invalid value for 'PGEVSTORE_TABLES_INTERVAL', the allowed values are: 1, 2, 3, 4, 6, 8, 12 and 24")
-            return
-
         pgpart_up()
     elif command == "trim":
         pgpart_trim()
@@ -56,14 +51,14 @@ def main():
 
 
 def pgpart_up():
-    with psycopg2.connect(DNS) as conn:
+    with psycopg2.connect(DSN) as conn:
         with conn.cursor() as cur:
             create_table(cur)
             create_partitions(cur)
 
 
 def pgpart_trim():
-    with psycopg2.connect(DNS) as conn:
+    with psycopg2.connect(DSN) as conn:
         with conn.cursor() as cur:
             cur.execute(sql.SELECT_ALL_PARTITION)
             rows = cur.fetchall()
@@ -78,7 +73,7 @@ def pgpart_trim():
             print('skip')
             continue
 
-        with psycopg2.connect(DNS) as conn:
+        with psycopg2.connect(DSN) as conn:
             with conn.cursor() as cur:
                 try:
                     detach_table(cur, partition)
@@ -87,7 +82,7 @@ def pgpart_trim():
 
         generate_backup(params, partition, DUMP_PATH)
 
-        with psycopg2.connect(DNS) as conn:
+        with psycopg2.connect(DSN) as conn:
             with conn.cursor() as cur:
                 drop_table(cur, partition)
 
