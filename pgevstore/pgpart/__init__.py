@@ -89,6 +89,7 @@ def pgpart_trim():
 
 def create_table(cur):
     cur.execute(sql.CREATE_TABLE)
+    cur.execute(sql.CREATE_INDEX_SOURCE)
 
 
 def create_partitions(cur):

@@ -9,6 +9,10 @@ CREATE_TABLE = """
     ) PARTITION BY RANGE (ev_time);
 """
 
+CREATE_INDEX_SOURCE = """
+    CREATE INDEX IF NOT EXISTS events_source_idx ON events (source)
+"""
+
 SELECT_LATEST_PARTITION = """
     SELECT tablename
     FROM pg_catalog.pg_tables
