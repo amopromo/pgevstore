@@ -6,7 +6,8 @@ import psycopg2
 
 class Client:
     def __init__(self, dsn):
-        self.conn = psycopg2.connect(dsn)
+        self.dsn = dsn
+        self.conn = psycopg2.connect(self.dsn)
 
     def __del__(self):
         self.conn.close()
@@ -17,25 +18,31 @@ class Client:
 
         key = uuid.uuid4()
 
-        with self.conn.cursor() as cur:
-            cur.execute("""
-            INSERT INTO events(key, source, description, data, tags, ev_time)
-            SELECT %(key)s
-                 , %(source)s
-                 , %(description)s
-                 , %(data)s
-                 , %(tags)s
-                 , CASE WHEN %(ev_time)s IS NOT NULL THEN %(ev_time)s ELSE now() END
-            """, {
-                "key": key,
-                "source": source,
-                "description": description,
-                "data": json.dumps(data),
-                "tags": tags,
-                "ev_time": ev_time,
-            })
+        try:
+            cur = self.conn.cursor()
+        except Exception:
+            self.conn = psycopg2.connect(self.dsn)
+            cur = self.conn.cursor()
+
+        cur.execute("""
+        INSERT INTO events(key, source, description, data, tags, ev_time)
+        SELECT %(key)s
+                , %(source)s
+                , %(description)s
+                , %(data)s
+                , %(tags)s
+                , CASE WHEN %(ev_time)s IS NOT NULL THEN %(ev_time)s ELSE now() END
+        """, {
+            "key": key,
+            "source": source,
+            "description": description,
+            "data": json.dumps(data),
+            "tags": tags,
+            "ev_time": ev_time,
+        })
 
         self.conn.commit()
+        cur.close()
 
     def add_batch(self, batch):
         batch_size = len(batch)
