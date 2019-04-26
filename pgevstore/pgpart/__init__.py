@@ -88,8 +88,9 @@ def pgpart_trim():
 
 
 def create_table(cur):
-    cur.execute(sql.CREATE_TABLE)
-    cur.execute(sql.CREATE_INDEX_SOURCE)
+    pass
+    # cur.execute(sql.CREATE_TABLE)
+    # cur.execute(sql.CREATE_INDEX_SOURCE)
 
 
 def create_partitions(cur):
@@ -103,6 +104,8 @@ def create_partitions(cur):
 
     today = date.today()
 
+    table_interval = timedelta(days=TABLES_INTERVAL)
+
     if dt:
         dt += table_interval
     else:
@@ -111,7 +114,6 @@ def create_partitions(cur):
         else:
             dt = today
 
-    table_interval = timedelta(days=TABLES_INTERVAL)
 
     end_dt = today + table_interval * TABLES_AHEAD
 

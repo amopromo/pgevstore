@@ -16,7 +16,7 @@ CREATE_INDEX_SOURCE = """
 SELECT_LATEST_PARTITION = """
     SELECT tablename
     FROM pg_catalog.pg_tables
-    WHERE tablename ~ 'events_\d+_\d+'
+    WHERE tablename ~ '^events_\d+$'
     ORDER BY tablename DESC
 """
 
