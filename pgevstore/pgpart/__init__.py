@@ -88,9 +88,8 @@ def pgpart_trim():
 
 
 def create_table(cur):
-    pass
-    # cur.execute(sql.CREATE_TABLE)
-    # cur.execute(sql.CREATE_INDEX_SOURCE)
+    cur.execute(sql.CREATE_TABLE)
+    cur.execute(sql.CREATE_INDEX_SOURCE)
 
 
 def create_partitions(cur):
@@ -98,7 +97,7 @@ def create_partitions(cur):
     row = cur.fetchone()
 
     try:
-        dt = datetime.strptime(row[0], "events_%Y%m%d")
+        dt = datetime.strptime(row[0], "events_%Y%m%d").date()
     except (ValueError, TypeError):
         dt = None
 
