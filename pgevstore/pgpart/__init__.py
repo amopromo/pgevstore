@@ -103,7 +103,9 @@ def create_partitions(cur):
 
     today = date.today()
 
-    if not dt:
+    if dt:
+        dt += table_interval
+    else:
         if DEFAULT_BEGIN:
             dt = datetime.strptime(DEFAULT_BEGIN, "%Y-%m-%d").date()
         else:
