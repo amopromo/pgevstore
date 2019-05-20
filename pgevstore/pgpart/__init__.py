@@ -60,7 +60,7 @@ def pgpart_up():
 def pgpart_trim():
     with psycopg2.connect(DSN) as conn:
         with conn.cursor() as cur:
-            cur.execute(sql.SELECT_ALL_PARTITION)
+            cur.execute(sql.SELECT_FIRST_LVL_PARTITION)
             rows = cur.fetchall()
 
             params = cur.connection.get_dsn_parameters()

@@ -20,10 +20,10 @@ SELECT_LATEST_PARTITION = """
     ORDER BY tablename DESC
 """
 
-SELECT_ALL_PARTITION = """
+SELECT_FIRST_LVL_PARTITION = """
     SELECT tablename
     FROM pg_catalog.pg_tables
-    WHERE tablename ~ '^events_\d+_\d+$'
+    WHERE tablename ~ '^events_\d+$'
     ORDER BY tablename
 """
 
