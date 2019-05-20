@@ -69,7 +69,7 @@ def pgpart_trim():
         print("{}/{}: {}".format(i+1, len(rows), partition))
         dt = datetime.strptime(partition, "events_%Y%m%d")
 
-        if dt + timedelta(days=TABLES_INTERVAL) * TABLES_BEHIND > date.today():
+        if (dt + timedelta(days=TABLES_INTERVAL) * TABLES_BEHIND).date() > date.today():
             print('skip')
             continue
 
